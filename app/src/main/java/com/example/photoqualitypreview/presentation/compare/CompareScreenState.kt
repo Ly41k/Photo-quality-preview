@@ -1,6 +1,6 @@
-package com.example.photoqualitypreview.compare
+package com.example.photoqualitypreview.presentation.compare
 
-import com.example.photoqualitypreview.PhotoItem
+import com.example.photoqualitypreview.domain.PhotoItem
 
 data class CompareScreenState(
     val photoItem: PhotoItem,

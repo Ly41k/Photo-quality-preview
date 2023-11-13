@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview
+package com.example.photoqualitypreview.presentation.preview
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.photoqualitypreview.preview.PreviewScreenState
+import com.example.photoqualitypreview.domain.PhotoItem
+import com.example.photoqualitypreview.presentation.views.PhotoView
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 
 @Composable

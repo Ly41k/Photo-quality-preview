@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview
+package com.example.photoqualitypreview.core
 
 import android.graphics.BitmapFactory
 import androidx.compose.runtime.Composable

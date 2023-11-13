@@ -1,6 +1,6 @@
-package com.example.photoqualitypreview.preview
+package com.example.photoqualitypreview.presentation.preview
 
-import com.example.photoqualitypreview.PhotoItem
+import com.example.photoqualitypreview.domain.PhotoItem
 
 data class PreviewScreenState(
     val originalPhotoItem: PhotoItem,

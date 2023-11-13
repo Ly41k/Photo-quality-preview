@@ -13,13 +13,13 @@
         android:theme="@style/Theme.PhotoQualityPreview"
         tools:targetApi="31">
         <activity
-            android:name=".PreviewActivity"
+            android:name=".presentation.preview.PreviewActivity"
             android:exported="false" />
         <activity
-            android:name=".CompareActivity"
+            android:name=".presentation.compare.CompareActivity"
             android:exported="false" />
         <activity
-            android:name=".ChooseActivity"
+            android:name=".presentation.choose.ChooseActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.PhotoQualityPreview">

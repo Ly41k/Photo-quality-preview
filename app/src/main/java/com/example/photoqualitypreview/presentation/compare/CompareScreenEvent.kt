@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview.compare
+package com.example.photoqualitypreview.presentation.compare
 
 sealed interface CompareScreenEvent {
     data class OnQualityChanged(val value: Float) : CompareScreenEvent

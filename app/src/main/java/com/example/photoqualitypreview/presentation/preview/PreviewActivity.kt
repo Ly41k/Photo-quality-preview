@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview
+package com.example.photoqualitypreview.presentation.preview
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

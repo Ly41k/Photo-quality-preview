@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview.choose
+package com.example.photoqualitypreview.presentation.choose
 
 sealed interface ChooseScreenEvent {
     data object OnAddPhotoClicked : ChooseScreenEvent

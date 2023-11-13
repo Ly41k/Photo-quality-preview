@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview
+package com.example.photoqualitypreview.presentation.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.photoqualitypreview.core.rememberBitmapFromBytes
+import com.example.photoqualitypreview.domain.PhotoItem
 
 @Composable
 fun PhotoView(
