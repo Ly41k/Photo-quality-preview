@@ -26,16 +26,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.photoqualitypreview.domain.PhotoItem
+import com.example.photoqualitypreview.core.ImagePicker
 import com.example.photoqualitypreview.presentation.views.PhotoView
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 
 @Composable
 fun ChooseScreen(
-    photoItem: PhotoItem?,
+    state: ChooseScreenState?,
     onEvent: (ChooseScreenEvent) -> Unit,
+    imagePicker: ImagePicker?,
     modifier: Modifier = Modifier,
 ) {
+
+    imagePicker?.registerPicker { imageBytes -> onEvent(ChooseScreenEvent.OnPhotoPicked(imageBytes)) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -55,7 +59,7 @@ fun ChooseScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Box {
-            if (photoItem?.photoBytes == null) {
+            if (state?.photoItem?.photoBytes == null) {
                 Box(modifier = Modifier
                     .size(250.dp)
                     .background(MaterialTheme.colorScheme.secondaryContainer)
@@ -75,7 +79,7 @@ fun ChooseScreen(
                 }
             } else {
                 PhotoView(
-                    photoItem = photoItem,
+                    photoItem = state.photoItem,
                     modifier = Modifier
                         .size(250.dp)
                         .clickable { onEvent(ChooseScreenEvent.OnAddPhotoClicked) }
@@ -85,7 +89,9 @@ fun ChooseScreen(
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = { onEvent(ChooseScreenEvent.OnNextButtonClicked) },
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier.fillMaxWidth(),
+            enabled = state?.isNextButtonActive == true
         ) {
             Text(text = "Next")
         }
@@ -95,5 +101,5 @@ fun ChooseScreen(
 @Preview(showBackground = true)
 @Composable
 fun ChooseScreenPreview() {
-    PhotoQualityPreviewTheme { ChooseScreen(null, {}) }
+    PhotoQualityPreviewTheme { ChooseScreen(null, {}, null) }
 }
