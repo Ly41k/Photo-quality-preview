@@ -12,14 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 
-class MainActivity : ComponentActivity() {
+class ChooseActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             PhotoQualityPreviewTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
+                    ChooseScreen(photoItem = null, {
+
+                    })
                 }
             }
         }
