@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Button
@@ -22,9 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.photoqualitypreview.choose.ChooseScreenEvent
+import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 
 @Composable
 fun ChooseScreen(
@@ -32,7 +35,6 @@ fun ChooseScreen(
     onEvent: (ChooseScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -42,17 +44,24 @@ fun ChooseScreen(
         verticalArrangement = Arrangement.Top
     ) {
         Spacer(modifier = Modifier.height(100.dp))
+        Text(
+            text = "Choose photo",
+            modifier = Modifier.fillMaxWidth(),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(24.dp))
         Box {
             if (photoItem?.photoBytes == null) {
                 Box(modifier = Modifier
                     .size(250.dp)
-                    .clip(RoundedCornerShape(40))
                     .background(MaterialTheme.colorScheme.secondaryContainer)
                     .clickable { onEvent(ChooseScreenEvent.OnAddPhotoClicked) }
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        shape = RoundedCornerShape(40)
                     ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -80,4 +89,10 @@ fun ChooseScreen(
             Text(text = "Next")
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ChooseScreenPreview() {
+    PhotoQualityPreviewTheme { ChooseScreen(null, {}) }
 }
