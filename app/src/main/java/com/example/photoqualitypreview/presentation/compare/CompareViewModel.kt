@@ -72,7 +72,6 @@ class CompareViewModel(
             prevState.copy(
                 modifiedItem = PhotoItem(changes.byteArray, null),
                 modifiedFilePath = changes.filePath,
-                modifiedPhoto = changes.byteArray,
                 modifiedSize = changes.byteArray?.size?.formatAsFileSize,
                 isNextButtonActive = true
             )

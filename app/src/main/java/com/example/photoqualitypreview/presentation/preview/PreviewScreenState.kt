@@ -3,9 +3,9 @@ package com.example.photoqualitypreview.presentation.preview
 import com.example.photoqualitypreview.domain.PhotoItem
 
 data class PreviewScreenState(
-    val originalPhotoItem: PhotoItem,
-    val modifiedPhotoItem: PhotoItem,
-    val originalPhotoSize: String,
-    val modifiedPhotoSize: String
+    val originalItem: PhotoItem? = null,
+    val modifiedItem: PhotoItem? = null,
+    val originalSize: String? = null,
+    val modifiedSize: String? = null
 )
 
