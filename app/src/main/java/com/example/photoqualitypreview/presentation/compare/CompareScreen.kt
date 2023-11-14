@@ -18,12 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.photoqualitypreview.domain.PhotoItem
 import com.example.photoqualitypreview.presentation.views.PhotoView
-import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 
 @Composable
 fun CompareScreen(
@@ -50,7 +47,7 @@ fun CompareScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         PhotoView(
-            photoBytes = if (state.qualityPercent < 100) state.modifiedItem?.photoBytes else state.originalItem?.photoBytes,
+            photoBytes = state.modifiedItem?.photoBytes ?: state.originalItem?.photoBytes,
             modifier = Modifier.size(300.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -62,39 +59,22 @@ fun CompareScreen(
             },
             enabled = state.isSliderActive,
             valueRange = 1f..100f,
-            steps = 10,
+            steps = 100,
             onValueChangeFinished = {
                 onEvent(CompareScreenEvent.OnQualityChangeFinished)
             }
-
-
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(text = "Original: ${state.originalSize} ")
-        Text(text = "Modified: ${state.modifiedSize}")
+        Text(text = "Modified: ${state.modifiedSize ?: ""} ${state.getDifferences()}")
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = { onEvent(CompareScreenEvent.OnNextButtonClicked) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = state.isNextButtonActive
         ) {
             Text(text = "Next")
         }
     }
-
-
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun CompareScreenPreview() {
-//    PhotoQualityPreviewTheme {
-//        CompareScreen(
-//            state = CompareScreenState(
-//                PhotoItem(null, null), 100f, ""
-//            ), {
-//
-//            }
-//        )
-//    }
-//}

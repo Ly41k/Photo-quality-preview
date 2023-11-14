@@ -1,7 +1,6 @@
 package com.example.photoqualitypreview.presentation.choose
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,8 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.example.photoqualitypreview.core.Constants.PHOTO_URI
+import com.example.photoqualitypreview.core.Constants.ORIGINAL_IMAGE_KEY
 import com.example.photoqualitypreview.core.ImagePicker
 import com.example.photoqualitypreview.core.ImagePickerFactory
 import com.example.photoqualitypreview.core.ImageStorage
@@ -32,12 +30,9 @@ class ChooseActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PhotoQualityPreviewTheme {
-
                 val viewModel = getViewModel(
                     key = "choose-screen",
-                    factory = viewModelFactory { ChooseViewModel(
-                        ImageStorage(this)
-                    ) }
+                    factory = viewModelFactory { ChooseViewModel(ImageStorage(this)) }
                 )
 
                 val state by viewModel.state.collectAsState()
@@ -73,7 +68,7 @@ class ChooseActivity : ComponentActivity() {
 
     private fun navigateToCompare(filePath: String?) {
         val intent = Intent(this, CompareActivity::class.java)
-            .apply { this.putExtra(PHOTO_URI, filePath) }
+            .apply { this.putExtra(ORIGINAL_IMAGE_KEY, filePath) }
         this.startActivity(intent)
     }
 

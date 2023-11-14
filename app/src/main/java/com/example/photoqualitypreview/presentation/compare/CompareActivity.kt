@@ -1,5 +1,6 @@
 package com.example.photoqualitypreview.presentation.compare
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,26 +10,27 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.example.photoqualitypreview.core.Constants.PHOTO_URI
+import com.example.photoqualitypreview.core.Constants.MODIFIED_IMAGE_KEY
+import com.example.photoqualitypreview.core.Constants.ORIGINAL_IMAGE_KEY
 import com.example.photoqualitypreview.core.ImageStorage
+import com.example.photoqualitypreview.core.launchAndRepeatWithViewLifecycle
+import com.example.photoqualitypreview.presentation.preview.PreviewActivity
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import kotlinx.coroutines.launch
 
 class CompareActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val uri = intent.getStringExtra(PHOTO_URI)
-        if (uri == null) this.onDestroy()
+        val filePath = intent.getStringExtra(ORIGINAL_IMAGE_KEY)
+        if (filePath == null) this.onDestroy()
         setContent {
             PhotoQualityPreviewTheme {
-
                 val viewModel = getViewModel(
                     key = "compare-screen",
-                    factory = viewModelFactory {
-                        CompareViewModel(ImageStorage(this), uri.orEmpty())
-                    }
+                    factory = viewModelFactory { CompareViewModel(ImageStorage(this), filePath.orEmpty()) }
                 )
 
                 val state by viewModel.state.collectAsState()
@@ -49,11 +51,25 @@ class CompareActivity : ComponentActivity() {
     }
 
     private fun subscribeViewModelEvents(viewModel: CompareViewModel) {
-
+        launchAndRepeatWithViewLifecycle { launch { viewModel.state.collect(::processNavigation) } }
     }
 
+    private fun processNavigation(newViewState: CompareScreenState) {
+        val action = newViewState.navigateEvent?.getContentIfNotHandled() ?: return
 
+        when (action) {
+            is CompareScreenNavigationAction.PreviewScreen -> navigateToCompare(
+                action.originalFileName,
+                action.modifiedFileName
+            )
+        }
+    }
+
+    private fun navigateToCompare(originalFileName: String?, modifiedFileName: String?) {
+        val intent = Intent(this, PreviewActivity::class.java)
+            .apply { this.putExtra(ORIGINAL_IMAGE_KEY, originalFileName) }
+            .apply { this.putExtra(MODIFIED_IMAGE_KEY, modifiedFileName) }
+        this.startActivity(intent)
+    }
 }
-
-
     

@@ -7,6 +7,7 @@ import com.example.photoqualitypreview.core.Constants.MODIFIED_IMAGE
 import com.example.photoqualitypreview.core.Constants.ORIGINAL_IMAGE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 class ImageStorage(private val context: Context) {
     suspend fun saveOriginalImage(bytes: ByteArray): String {
@@ -17,13 +18,15 @@ class ImageStorage(private val context: Context) {
         }
     }
 
-    suspend fun saveModifiedImage(bytes: ByteArray, quality: Int = 100): String {
+    suspend fun saveModifiedImage(bytes: ByteArray, quality: Int): String {
         return withContext(Dispatchers.IO) {
             val fileName = MODIFIED_IMAGE
             val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
             context.openFileOutput(fileName, Context.MODE_PRIVATE).use { outputStream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-                outputStream.write(bytes)
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
+                val byteArray = stream.toByteArray()
+                outputStream.write(byteArray)
             }
             fileName
         }
@@ -32,12 +35,6 @@ class ImageStorage(private val context: Context) {
     suspend fun getImage(fileName: String): ByteArray? {
         return withContext(Dispatchers.IO) {
             context.openFileInput(fileName).use { inputStream -> inputStream.readBytes() }
-        }
-    }
-
-    suspend fun deleteImage(fileName: String) {
-        return withContext(Dispatchers.IO) {
-            context.deleteFile(fileName)
         }
     }
 }

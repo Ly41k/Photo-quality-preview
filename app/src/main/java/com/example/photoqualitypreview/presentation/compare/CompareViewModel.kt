@@ -1,15 +1,12 @@
 package com.example.photoqualitypreview.presentation.compare
 
-import android.net.Uri
 import android.util.Log
-import com.example.photoqualitypreview.core.Constants.SLIDER_DEBOUNCE
 import com.example.photoqualitypreview.core.Event
 import com.example.photoqualitypreview.core.ImageStorage
+import com.example.photoqualitypreview.core.formatAsFileSize
 import com.example.photoqualitypreview.domain.PhotoItem
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,12 +14,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
 
@@ -46,10 +40,9 @@ class CompareViewModel(
     private val _state: StateFlow<CompareScreenState>
         get() = merge(
             originalImageFlow(),
-//            nextButtonClicksFlow(),
+            nextButtonClicksFlow(),
             qualityChangesFlow(),
             qualityChangeFinishedFlow()
-
         )
             .catch { throwable -> handleThrowable(throwable) }
             .runningFold(CompareScreenState(), ::viewStateReducer)
@@ -60,7 +53,6 @@ class CompareViewModel(
                 initialValue = CompareScreenState()
             )
 
-
     private fun viewStateReducer(
         prevState: CompareScreenState,
         changes: CompareScreenPartialState
@@ -70,29 +62,21 @@ class CompareViewModel(
             prevState.copy(
                 originalItem = PhotoItem(changes.byteArray, null),
                 originalFilePath = filePath,
-                originalSize = changes.byteArray?.size.toString(),
+                originalSize = changes.byteArray?.size?.formatAsFileSize,
                 isSliderActive = true
             )
-
         }
 
-        is CompareScreenPartialState.QualityChanged -> {
-
-            prevState.copy(
-                qualityPercent = changes.value,
-            )
-        }
-
+        is CompareScreenPartialState.QualityChanged -> prevState.copy(qualityPercent = changes.value)
         is CompareScreenPartialState.ModifiedImageLoaded -> {
             prevState.copy(
                 modifiedItem = PhotoItem(changes.byteArray, null),
                 modifiedFilePath = changes.filePath,
                 modifiedPhoto = changes.byteArray,
-                modifiedSize = changes.byteArray?.size.toString()
+                modifiedSize = changes.byteArray?.size?.formatAsFileSize,
+                isNextButtonActive = true
             )
         }
-
-
     }
 
     val state = _state
@@ -101,19 +85,18 @@ class CompareViewModel(
         when (event) {
             CompareScreenEvent.OnNextButtonClicked -> nextBtnClicks.tryEmit(Unit)
             is CompareScreenEvent.OnQualityChanged -> qualityChanges.tryEmit(event.value)
-            is CompareScreenEvent.FilePathReceived -> {
-                originalFilePath.tryEmit(event.filePath)
-            }
-            is CompareScreenEvent.OnQualityChangeFinished ->{
-                qualityChangeFinish.tryEmit(Unit)
-            }
+            is CompareScreenEvent.FilePathReceived -> originalFilePath.tryEmit(event.filePath)
+            is CompareScreenEvent.OnQualityChangeFinished -> qualityChangeFinish.tryEmit(Unit)
         }
     }
 
-
     private fun nextButtonClicksFlow(): Flow<CompareScreenPartialState> =
         nextBtnClicks.map {
-            CompareScreenPartialState.Navigate(CompareScreenNavigationAction.PreviewScreen(Uri.EMPTY, Uri.EMPTY))
+            CompareScreenPartialState.Navigate(
+                CompareScreenNavigationAction.PreviewScreen(
+                    state.value.originalFilePath, state.value.modifiedFilePath
+                )
+            )
         }
 
     private fun originalImageFlow(): Flow<CompareScreenPartialState> =
@@ -127,26 +110,16 @@ class CompareViewModel(
 
     private fun qualityChangeFinishedFlow(): Flow<CompareScreenPartialState> =
         qualityChangeFinish
-            .onEach {
-                Log.d("TESTING_TAG", "qualityChangeFinish")
-            }.map {
-                val count = state.value.qualityPercent
-                val count1 = state.value.originalItem?.photoBytes
-                imageStorage.saveModifiedImage(count1!!, count)
-            }
             .map {
-                Log.d("TESTING_TAG", "qualityChangeFinish - $it")
-                imageStorage.getImage(it) to it
-            }.onEach {
-                Log.d("TESTING_TAG", "qualityChangeFinish - $it")
+                val quality = state.value.qualityPercent
+                val imageBytes = state.value.originalItem?.photoBytes
+                imageBytes?.let { imageStorage.saveModifiedImage(it, quality) }.orEmpty()
             }
+            .map { imageStorage.getImage(it) to it }
             .map { CompareScreenPartialState.ModifiedImageLoaded(it.first, it.second) }
-
 
 
     private fun handleThrowable(error: Throwable) {
         Log.d("TESTING_TAG", "handleThrowable - $error")
     }
-
-
 }
