@@ -30,8 +30,10 @@ class CompareActivity : ComponentActivity() {
             PhotoQualityPreviewTheme {
                 val viewModel = getViewModel(
                     key = "compare-screen",
-                    factory = viewModelFactory { CompareViewModel(ImageStorage(this), filePath.orEmpty()) }
+                    factory = viewModelFactory { CompareViewModel(ImageStorage(this)) }
                 )
+
+                viewModel.setOriginalFilePath(filePath.orEmpty())
 
                 val state by viewModel.state.collectAsState()
 
