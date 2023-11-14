@@ -4,11 +4,11 @@ import android.util.Log
 import com.example.photoqualitypreview.core.ImageStorage
 import com.example.photoqualitypreview.core.formatAsFileSize
 import com.example.photoqualitypreview.domain.PhotoItem
+import com.example.photoqualitypreview.presentation.preview.models.PreviewScreenPartialState
+import com.example.photoqualitypreview.presentation.preview.models.PreviewScreenState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,15 +26,6 @@ class PreviewViewModel(
 
     private val _filePaths = MutableStateFlow<Pair<String, String>?>(null)
     private val filePaths = _filePaths.filterNotNull()
-
-    private val nextBtnClicks =
-        MutableSharedFlow<Unit>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-
-    private val qualityChanges =
-        MutableSharedFlow<Float>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-
-    private val qualityChangeFinish =
-        MutableSharedFlow<Unit>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private val _state: StateFlow<PreviewScreenState>
         get() = merge(
@@ -56,14 +47,14 @@ class PreviewViewModel(
     ): PreviewScreenState = when (changes) {
         is PreviewScreenPartialState.OriginalImageLoaded -> {
             prevState.copy(
-                originalItem = PhotoItem(changes.byteArray, null),
+                originalItem = PhotoItem(changes.byteArray),
                 originalSize = changes.byteArray?.size?.formatAsFileSize,
             )
         }
 
         is PreviewScreenPartialState.ModifiedImageLoaded -> {
             prevState.copy(
-                modifiedItem = PhotoItem(changes.byteArray, null),
+                modifiedItem = PhotoItem(changes.byteArray),
                 modifiedSize = changes.byteArray?.size?.formatAsFileSize,
             )
         }

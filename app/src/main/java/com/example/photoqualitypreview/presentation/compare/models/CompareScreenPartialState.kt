@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview.presentation.compare
+package com.example.photoqualitypreview.presentation.compare.models
 
 sealed interface CompareScreenPartialState {
     data class Navigate(val action: CompareScreenNavigationAction) : CompareScreenPartialState

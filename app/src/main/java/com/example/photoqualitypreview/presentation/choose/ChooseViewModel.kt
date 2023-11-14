@@ -3,17 +3,25 @@ package com.example.photoqualitypreview.presentation.choose
 import android.util.Log
 import com.example.photoqualitypreview.core.Event
 import com.example.photoqualitypreview.core.ImageStorage
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent.OnAddPhotoClicked
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent.OnNextButtonClicked
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent.OnPhotoPicked
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenNavigationAction.CompareScreen
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenNavigationAction.PickImage
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenPartialState
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenPartialState.Navigate
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenPartialState.PhotoPicked
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -52,41 +60,34 @@ class ChooseViewModel(
         prevState: ChooseScreenState,
         changes: ChooseScreenPartialState
     ): ChooseScreenState = when (changes) {
-        is ChooseScreenPartialState.Navigate -> prevState.copy(navigateEvent = Event(changes.action))
-        is ChooseScreenPartialState.PhotoPicked -> prevState.copy(
-            imageBytes = changes.imageBytes,
-            isNextButtonActive = true
-        )
+        is Navigate -> prevState.copy(navigateEvent = Event(changes.action))
+        is PhotoPicked -> prevState.copy(imageBytes = changes.imageBytes, isNextButtonActive = true)
     }
 
     val state = _state
 
     fun onEvent(event: ChooseScreenEvent) {
         when (event) {
-            ChooseScreenEvent.OnAddPhotoClicked -> addPhotoClicks.tryEmit(Unit)
-            ChooseScreenEvent.OnNextButtonClicked -> nextBtnClicks.tryEmit(Unit)
-            is ChooseScreenEvent.OnPhotoPicked -> photoPicks.tryEmit(event.bytes)
+            OnAddPhotoClicked -> addPhotoClicks.tryEmit(Unit)
+            OnNextButtonClicked -> nextBtnClicks.tryEmit(Unit)
+            is OnPhotoPicked -> photoPicks.tryEmit(event.bytes)
         }
     }
 
     private fun addPhotoClicksFlow(): Flow<ChooseScreenPartialState> =
-        addPhotoClicks.map { ChooseScreenPartialState.Navigate(ChooseScreenNavigationAction.PickImage) }
+        addPhotoClicks.map { Navigate(PickImage) }
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun nextButtonClicksFlow(): Flow<ChooseScreenPartialState> =
         nextBtnClicks
-            .debounce(150L)
             .mapLatest {
                 val byteArray = state.value.imageBytes
                 byteArray?.let { imageStorage.saveOriginalImage(it) }
             }
-            .map {
-                Log.d("TESTING_TAG", "nextBtnClicks - $it")
-                ChooseScreenPartialState.Navigate(ChooseScreenNavigationAction.CompareScreen(it))
-            }
+            .map { Navigate(CompareScreen(it)) }
 
     private fun photoPicksFlow(): Flow<ChooseScreenPartialState> =
-        photoPicks.map { byteArray -> ChooseScreenPartialState.PhotoPicked(byteArray)}
+        photoPicks.map { byteArray -> PhotoPicked(byteArray) }
 
 
     private fun handleThrowable(error: Throwable) {

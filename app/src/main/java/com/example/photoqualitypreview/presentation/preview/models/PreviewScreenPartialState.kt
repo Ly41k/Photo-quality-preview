@@ -1,6 +1,5 @@
-package com.example.photoqualitypreview.presentation.preview
+package com.example.photoqualitypreview.presentation.preview.models
 
-import com.example.photoqualitypreview.presentation.compare.CompareScreenPartialState
 
 sealed interface PreviewScreenPartialState {
 

@@ -21,11 +21,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.photoqualitypreview.R
 import com.example.photoqualitypreview.core.ImagePicker
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent.OnAddPhotoClicked
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent.OnNextButtonClicked
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenEvent.OnPhotoPicked
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenState
 import com.example.photoqualitypreview.presentation.views.PhotoView
 
 @Composable
@@ -36,7 +43,7 @@ fun ChooseScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    imagePicker?.registerPicker { imageBytes -> onEvent(ChooseScreenEvent.OnPhotoPicked(imageBytes)) }
+    imagePicker?.registerPicker { imageBytes -> onEvent(OnPhotoPicked(imageBytes)) }
 
     LazyColumn(
         modifier = modifier
@@ -49,7 +56,7 @@ fun ChooseScreen(
 
         item {
             Text(
-                text = "Choose photo",
+                text = stringResource(R.string.choose_photo),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp),
@@ -68,7 +75,7 @@ fun ChooseScreen(
                         .aspectRatio(1f, true)
                         .padding(top = 20.dp)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .clickable { onEvent(ChooseScreenEvent.OnAddPhotoClicked) }
+                        .clickable { onEvent(OnAddPhotoClicked) }
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -77,7 +84,7 @@ fun ChooseScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Add,
-                            contentDescription = "Add",
+                            contentDescription = stringResource(R.string.add),
                             tint = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.size(40.dp)
                         )
@@ -90,19 +97,19 @@ fun ChooseScreen(
                             .aspectRatio(1f, true)
                             .padding(top = 20.dp)
                             .heightIn(min = 300.dp)
-                            .clickable { onEvent(ChooseScreenEvent.OnAddPhotoClicked) }
+                            .clickable { onEvent(OnAddPhotoClicked) }
                     )
                 }
             }
         }
         item {
             Button(
-                onClick = { onEvent(ChooseScreenEvent.OnNextButtonClicked) },
+                onClick = { onEvent(OnNextButtonClicked) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, bottom = 50.dp),
                 enabled = state?.isNextButtonActive == true
-            ) { Text(text = "Next") }
+            ) { Text(text = stringResource(R.string.next)) }
         }
     }
 }

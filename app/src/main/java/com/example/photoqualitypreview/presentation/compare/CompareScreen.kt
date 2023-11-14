@@ -18,10 +18,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.photoqualitypreview.R
+import com.example.photoqualitypreview.presentation.compare.models.CompareScreenEvent
+import com.example.photoqualitypreview.presentation.compare.models.CompareScreenEvent.OnNextButtonClicked
+import com.example.photoqualitypreview.presentation.compare.models.CompareScreenEvent.OnQualityChangeFinished
+import com.example.photoqualitypreview.presentation.compare.models.CompareScreenEvent.OnQualityChanged
+import com.example.photoqualitypreview.presentation.compare.models.CompareScreenState
 import com.example.photoqualitypreview.presentation.views.PhotoView
 
 @Composable
@@ -41,7 +48,7 @@ fun CompareScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Modify the photo",
+            text = stringResource(R.string.modify_the_photo),
             modifier = Modifier.fillMaxWidth(),
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -57,26 +64,25 @@ fun CompareScreen(
         )
         Slider(
             value = state.qualityPercent.toFloat(),
-            onValueChange = { onEvent(CompareScreenEvent.OnQualityChanged(it)) },
+            onValueChange = { onEvent(OnQualityChanged(it)) },
             enabled = state.isSliderActive,
             valueRange = 1f..100f,
             steps = 100,
-            onValueChangeFinished = { onEvent(CompareScreenEvent.OnQualityChangeFinished) },
+            onValueChangeFinished = { onEvent(OnQualityChangeFinished) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Text(text = "Original: ${state.originalSize} ")
-        Text(text = "Modified: ${state.modifiedSize ?: ""} ${state.getDifferences()}")
-
+        Text(text = stringResource(R.string.original, state.originalSize.orEmpty()))
+        Text(text = stringResource(R.string.modified, state.modifiedSize.orEmpty() ?: "", state.getDifferences()))
 
         Button(
-            onClick = { onEvent(CompareScreenEvent.OnNextButtonClicked) },
+            onClick = { onEvent(OnNextButtonClicked) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp, bottom = 50.dp),
             enabled = state.isNextButtonActive
-        ) { Text(text = "Next") }
+        ) { Text(stringResource(id = R.string.next)) }
     }
 }

@@ -15,6 +15,9 @@ import com.example.photoqualitypreview.core.ImagePicker
 import com.example.photoqualitypreview.core.ImagePickerFactory
 import com.example.photoqualitypreview.core.ImageStorage
 import com.example.photoqualitypreview.core.launchAndRepeatWithViewLifecycle
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenNavigationAction.CompareScreen
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenNavigationAction.PickImage
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenState
 import com.example.photoqualitypreview.presentation.compare.CompareActivity
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 import dev.icerock.moko.mvvm.compose.getViewModel
@@ -61,8 +64,8 @@ class ChooseActivity : ComponentActivity() {
         val action = newViewState.navigateEvent?.getContentIfNotHandled() ?: return
 
         when (action) {
-            ChooseScreenNavigationAction.PickImage -> imagePicker.pickImage()
-            is ChooseScreenNavigationAction.CompareScreen -> navigateToCompare(action.filePath)
+            PickImage -> imagePicker.pickImage()
+            is CompareScreen -> navigateToCompare(action.filePath)
         }
     }
 

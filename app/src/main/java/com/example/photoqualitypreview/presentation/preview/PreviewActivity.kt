@@ -1,6 +1,5 @@
 package com.example.photoqualitypreview.presentation.preview
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,15 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.example.photoqualitypreview.core.Constants
 import com.example.photoqualitypreview.core.ImageStorage
-import com.example.photoqualitypreview.core.launchAndRepeatWithViewLifecycle
-import com.example.photoqualitypreview.presentation.compare.CompareScreen
-import com.example.photoqualitypreview.presentation.compare.CompareScreenNavigationAction
-import com.example.photoqualitypreview.presentation.compare.CompareScreenState
-import com.example.photoqualitypreview.presentation.compare.CompareViewModel
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
-import kotlinx.coroutines.launch
 
 class PreviewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +35,7 @@ class PreviewActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PreviewScreen(state = state,)
+                    PreviewScreen(state = state)
                 }
             }
         }

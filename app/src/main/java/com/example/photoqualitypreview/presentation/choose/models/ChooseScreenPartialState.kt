@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview.presentation.choose
+package com.example.photoqualitypreview.presentation.choose.models
 
 sealed interface ChooseScreenPartialState {
     data class Navigate(val action: ChooseScreenNavigationAction) : ChooseScreenPartialState

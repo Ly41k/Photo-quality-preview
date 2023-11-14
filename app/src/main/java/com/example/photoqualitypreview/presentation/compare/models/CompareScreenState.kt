@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview.presentation.compare
+package com.example.photoqualitypreview.presentation.compare.models
 
 import com.example.photoqualitypreview.core.Event
 import com.example.photoqualitypreview.core.formatAsFileSize

@@ -7,4 +7,6 @@ object Constants {
 
     const val ORIGINAL_IMAGE: String = "original_photo.jpg"
     const val MODIFIED_IMAGE: String = "modified_photo.jpg"
+
+    const val IMAGE_DIR : String = "image/*"
 }

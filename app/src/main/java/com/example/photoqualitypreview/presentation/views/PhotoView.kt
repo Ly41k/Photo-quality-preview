@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.photoqualitypreview.R
 import com.example.photoqualitypreview.core.rememberBitmapFromBytes
 
 @Composable
@@ -27,7 +29,7 @@ fun PhotoView(
     if (bitmap != null) {
         Image(
             bitmap = bitmap,
-            contentDescription = "Photo",
+            contentDescription = stringResource(R.string.photo),
             modifier = modifier,
             contentScale = ContentScale.Crop
         )
@@ -38,7 +40,7 @@ fun PhotoView(
         ) {
             Icon(
                 imageVector = Icons.Rounded.Add,
-                contentDescription = "Photo",
+                contentDescription = stringResource(R.string.photo),
                 modifier = Modifier.size(iconSize),
                 tint = MaterialTheme.colorScheme.onSecondaryContainer
             )

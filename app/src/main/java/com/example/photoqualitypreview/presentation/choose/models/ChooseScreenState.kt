@@ -1,7 +1,7 @@
-package com.example.photoqualitypreview.presentation.choose
+package com.example.photoqualitypreview.presentation.choose.models
 
 import com.example.photoqualitypreview.core.Event
-import com.example.photoqualitypreview.domain.PhotoItem
+import com.example.photoqualitypreview.presentation.choose.models.ChooseScreenNavigationAction
 
 data class ChooseScreenState(
     val imageBytes: ByteArray? = null,

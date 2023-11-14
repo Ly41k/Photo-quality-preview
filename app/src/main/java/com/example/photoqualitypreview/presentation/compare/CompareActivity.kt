@@ -14,6 +14,8 @@ import com.example.photoqualitypreview.core.Constants.MODIFIED_IMAGE_KEY
 import com.example.photoqualitypreview.core.Constants.ORIGINAL_IMAGE_KEY
 import com.example.photoqualitypreview.core.ImageStorage
 import com.example.photoqualitypreview.core.launchAndRepeatWithViewLifecycle
+import com.example.photoqualitypreview.presentation.compare.models.CompareScreenNavigationAction.PreviewScreen
+import com.example.photoqualitypreview.presentation.compare.models.CompareScreenState
 import com.example.photoqualitypreview.presentation.preview.PreviewActivity
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 import dev.icerock.moko.mvvm.compose.getViewModel
@@ -60,7 +62,7 @@ class CompareActivity : ComponentActivity() {
         val action = newViewState.navigateEvent?.getContentIfNotHandled() ?: return
 
         when (action) {
-            is CompareScreenNavigationAction.PreviewScreen -> navigateToCompare(
+            is PreviewScreen -> navigateToCompare(
                 action.originalFileName,
                 action.modifiedFileName
             )

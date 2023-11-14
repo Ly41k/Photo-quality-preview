@@ -1,4 +1,4 @@
-package com.example.photoqualitypreview.presentation.preview
+package com.example.photoqualitypreview.presentation.preview.models
 
 import com.example.photoqualitypreview.domain.PhotoItem
 

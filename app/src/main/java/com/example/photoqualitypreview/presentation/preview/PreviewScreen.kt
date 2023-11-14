@@ -16,10 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.photoqualitypreview.R
+import com.example.photoqualitypreview.presentation.preview.models.PreviewScreenState
 import com.example.photoqualitypreview.presentation.views.PhotoView
 
 @Composable
@@ -49,7 +52,7 @@ fun PreviewScreen(
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Text(
-                text = "Original",
+                stringResource(id = R.string.original),
                 modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -58,7 +61,7 @@ fun PreviewScreen(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "Modified",
+                stringResource(id = R.string.modified),
                 modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
