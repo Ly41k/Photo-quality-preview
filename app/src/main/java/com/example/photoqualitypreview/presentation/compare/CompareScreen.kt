@@ -1,5 +1,6 @@
 package com.example.photoqualitypreview.presentation.compare
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.photoqualitypreview.domain.PhotoItem
-import com.example.photoqualitypreview.presentation.compare.CompareScreenEvent
-import com.example.photoqualitypreview.presentation.compare.CompareScreenState
 import com.example.photoqualitypreview.presentation.views.PhotoView
 import com.example.photoqualitypreview.ui.theme.PhotoQualityPreviewTheme
 
@@ -51,16 +50,28 @@ fun CompareScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         PhotoView(
-            photoItem = state.photoItem,
+            photoBytes = if (state.qualityPercent < 100) state.modifiedItem?.photoBytes else state.originalItem?.photoBytes,
             modifier = Modifier.size(300.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Slider(value = state.qualityPercent, onValueChange = {
-            onEvent(CompareScreenEvent.OnQualityChanged(it))
-        })
+        Slider(
+            value = state.qualityPercent.toFloat(),
+            onValueChange = {
+                Log.d("TESTING_TAG", "onValueChange - $it")
+                onEvent(CompareScreenEvent.OnQualityChanged(it))
+            },
+            enabled = state.isSliderActive,
+            valueRange = 1f..100f,
+            steps = 10,
+            onValueChangeFinished = {
+                onEvent(CompareScreenEvent.OnQualityChangeFinished)
+            }
+
+
+        )
         Spacer(modifier = Modifier.height(24.dp))
         Text(text = "Original: ${state.originalSize} ")
-        Text(text = "Modified: ${state.getModifiedSize()}")
+        Text(text = "Modified: ${state.modifiedSize}")
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
@@ -74,16 +85,16 @@ fun CompareScreen(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CompareScreenPreview() {
-    PhotoQualityPreviewTheme {
-        CompareScreen(
-            state = CompareScreenState(
-                PhotoItem(null), 100f, ""
-            ), {
-
-            }
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun CompareScreenPreview() {
+//    PhotoQualityPreviewTheme {
+//        CompareScreen(
+//            state = CompareScreenState(
+//                PhotoItem(null, null), 100f, ""
+//            ), {
+//
+//            }
+//        )
+//    }
+//}

@@ -59,7 +59,7 @@ fun ChooseScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Box {
-            if (state?.photoItem?.photoBytes == null) {
+            if (state?.imageBytes == null) {
                 Box(modifier = Modifier
                     .size(250.dp)
                     .background(MaterialTheme.colorScheme.secondaryContainer)
@@ -79,7 +79,7 @@ fun ChooseScreen(
                 }
             } else {
                 PhotoView(
-                    photoItem = state.photoItem,
+                    photoBytes = state.imageBytes,
                     modifier = Modifier
                         .size(250.dp)
                         .clickable { onEvent(ChooseScreenEvent.OnAddPhotoClicked) }

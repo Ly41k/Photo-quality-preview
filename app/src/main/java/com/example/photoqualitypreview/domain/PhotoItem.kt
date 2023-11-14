@@ -1,3 +1,5 @@
 package com.example.photoqualitypreview.domain
 
-data class PhotoItem(val photoBytes: ByteArray?)
+import android.net.Uri
+
+data class PhotoItem(val photoBytes: ByteArray?, val photoUri: Uri?)

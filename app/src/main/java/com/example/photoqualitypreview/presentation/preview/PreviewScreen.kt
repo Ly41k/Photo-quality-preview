@@ -70,21 +70,21 @@ fun PreviewScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        Row {
-            PhotoView(
-                photoItem = state.originalPhotoItem,
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .weight(1f)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            PhotoView(
-                photoItem = state.modifiedPhotoItem,
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .weight(1f)
-            )
-        }
+//        Row {
+//            PhotoView(
+//                photoItem = state.originalPhotoItem,
+//                modifier = Modifier
+//                    .aspectRatio(1f)
+//                    .weight(1f)
+//            )
+//            Spacer(modifier = Modifier.width(16.dp))
+//            PhotoView(
+//                photoItem = state.modifiedPhotoItem,
+//                modifier = Modifier
+//                    .aspectRatio(1f)
+//                    .weight(1f)
+//            )
+//        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -116,8 +116,8 @@ fun PreviewScreenPreview() {
     PhotoQualityPreviewTheme {
         PreviewScreen(
             state = PreviewScreenState(
-                PhotoItem(null),
-                PhotoItem(null),
+                PhotoItem(null, null),
+                PhotoItem(null, null),
                 "11111",
                 "2222"
             )

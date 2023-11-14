@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,11 +19,11 @@ import com.example.photoqualitypreview.domain.PhotoItem
 
 @Composable
 fun PhotoView(
-    photoItem: PhotoItem?,
+    photoBytes: ByteArray?,
     modifier: Modifier = Modifier,
     iconSize: Dp = 25.dp
 ) {
-    val bitmap = rememberBitmapFromBytes(photoItem?.photoBytes)
+    val bitmap = rememberBitmapFromBytes(photoBytes)
     val photoModifier = modifier
 
     if (bitmap != null) {
@@ -40,7 +40,7 @@ fun PhotoView(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Rounded.Person,
+                imageVector = Icons.Rounded.Add,
                 contentDescription = "Photo",
                 modifier = Modifier.size(iconSize),
                 tint = MaterialTheme.colorScheme.onSecondaryContainer
