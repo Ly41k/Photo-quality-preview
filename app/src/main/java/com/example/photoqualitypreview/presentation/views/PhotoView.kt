@@ -15,7 +15,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.photoqualitypreview.core.rememberBitmapFromBytes
-import com.example.photoqualitypreview.domain.PhotoItem
 
 @Composable
 fun PhotoView(
@@ -24,19 +23,17 @@ fun PhotoView(
     iconSize: Dp = 25.dp
 ) {
     val bitmap = rememberBitmapFromBytes(photoBytes)
-    val photoModifier = modifier
 
     if (bitmap != null) {
         Image(
             bitmap = bitmap,
             contentDescription = "Photo",
-            modifier = photoModifier,
+            modifier = modifier,
             contentScale = ContentScale.Crop
         )
     } else {
         Box(
-            modifier = photoModifier
-                .background(MaterialTheme.colorScheme.secondaryContainer),
+            modifier = modifier.background(MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {
             Icon(

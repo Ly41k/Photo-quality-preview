@@ -1,14 +1,16 @@
 package com.example.photoqualitypreview.presentation.compare
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -33,10 +35,11 @@ fun CompareScreen(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp)
+            .padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(100.dp))
         Text(
             text = "Modify the photo",
             modifier = Modifier.fillMaxWidth(),
@@ -45,36 +48,35 @@ fun CompareScreen(
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.height(24.dp))
         PhotoView(
             photoBytes = state.modifiedItem?.photoBytes ?: state.originalItem?.photoBytes,
-            modifier = Modifier.size(300.dp)
+            modifier = Modifier
+                .size(250.dp)
+                .padding(top = 16.dp)
+                .aspectRatio(1f, true)
         )
-        Spacer(modifier = Modifier.height(24.dp))
         Slider(
             value = state.qualityPercent.toFloat(),
-            onValueChange = {
-                Log.d("TESTING_TAG", "onValueChange - $it")
-                onEvent(CompareScreenEvent.OnQualityChanged(it))
-            },
+            onValueChange = { onEvent(CompareScreenEvent.OnQualityChanged(it)) },
             enabled = state.isSliderActive,
             valueRange = 1f..100f,
             steps = 100,
-            onValueChangeFinished = {
-                onEvent(CompareScreenEvent.OnQualityChangeFinished)
-            }
+            onValueChangeFinished = { onEvent(CompareScreenEvent.OnQualityChangeFinished) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(text = "Original: ${state.originalSize} ")
         Text(text = "Modified: ${state.modifiedSize ?: ""} ${state.getDifferences()}")
-        Spacer(modifier = Modifier.height(24.dp))
+
 
         Button(
             onClick = { onEvent(CompareScreenEvent.OnNextButtonClicked) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, bottom = 50.dp),
             enabled = state.isNextButtonActive
-        ) {
-            Text(text = "Next")
-        }
+        ) { Text(text = "Next") }
     }
 }
