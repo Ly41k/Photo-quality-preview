@@ -25,7 +25,7 @@ class PreviewActivity : ComponentActivity() {
             PhotoQualityPreviewTheme {
                 val viewModel = getViewModel(
                     key = "preview-screen",
-                    factory = viewModelFactory { PreviewViewModel(ImageStorage(this)) }
+                    factory = viewModelFactory { PreviewViewModel(ImageStorage(applicationContext)) }
                 )
                 viewModel.setFilePaths(originalFileName.orEmpty(), modifiedFileName.orEmpty())
 

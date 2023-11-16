@@ -26,8 +26,7 @@ import kotlinx.coroutines.launch
 
 class ChooseActivity : ComponentActivity() {
 
-    private var _imagePicker: ImagePicker? = null
-    private val imagePicker: ImagePicker get() = _imagePicker!!
+    private var imagePicker: ImagePicker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +34,11 @@ class ChooseActivity : ComponentActivity() {
             PhotoQualityPreviewTheme {
                 val viewModel = getViewModel(
                     key = "choose-screen",
-                    factory = viewModelFactory { ChooseViewModel(ImageStorage(this)) }
+                    factory = viewModelFactory { ChooseViewModel(ImageStorage(applicationContext)) }
                 )
 
                 val state by viewModel.state.collectAsState()
-                _imagePicker = ImagePickerFactory().createPicker()
+                imagePicker = ImagePickerFactory().createPicker()
                 subscribeViewModelEvents(viewModel)
 
                 Surface(
@@ -64,7 +63,7 @@ class ChooseActivity : ComponentActivity() {
         val action = newViewState.navigateEvent?.getContentIfNotHandled() ?: return
 
         when (action) {
-            PickImage -> imagePicker.pickImage()
+            PickImage -> imagePicker?.pickImage()
             is CompareScreen -> navigateToCompare(action.filePath)
         }
     }
@@ -76,7 +75,7 @@ class ChooseActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
-        _imagePicker = null
+        imagePicker = null
         super.onDestroy()
     }
 }
