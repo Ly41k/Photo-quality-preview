@@ -78,7 +78,7 @@ class CompareViewModel(
                 originalItem = PhotoItem(changes.byteArray),
                 originalFilePath = _originalFilePath.value,
                 originalSize = changes.byteArray?.size?.formatAsFileSize,
-                isSliderActive = true
+                isSliderActive = changes.byteArray != null
             )
         }
 
@@ -88,7 +88,7 @@ class CompareViewModel(
                 modifiedItem = PhotoItem(changes.byteArray),
                 modifiedFilePath = changes.filePath,
                 modifiedSize = changes.byteArray?.size?.formatAsFileSize,
-                isNextButtonActive = true
+                isNextButtonActive = changes.byteArray != null
             )
         }
 

@@ -9,6 +9,7 @@ import com.example.photoqualitypreview.core.Constants.ORIGINAL_IMAGE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
 
 class ImageStorage(private val context: Context) {
     suspend fun saveOriginalImage(bytes: ByteArray): String {
@@ -35,7 +36,11 @@ class ImageStorage(private val context: Context) {
 
     suspend fun getImage(fileName: String): ByteArray? {
         return withContext(Dispatchers.IO) {
-            context.openFileInput(fileName).use { inputStream -> inputStream.readBytes() }
+            try {
+                context.openFileInput(fileName).use { inputStream -> inputStream.readBytes() }
+            } catch (e: FileNotFoundException) {
+                null
+            }
         }
     }
 }

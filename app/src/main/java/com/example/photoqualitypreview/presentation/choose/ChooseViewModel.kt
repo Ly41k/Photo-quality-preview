@@ -22,9 +22,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
@@ -62,6 +64,7 @@ class ChooseViewModel(
     ): ChooseScreenState = when (changes) {
         is Navigate -> prevState.copy(navigateEvent = Event(changes.action))
         is PhotoPicked -> prevState.copy(imageBytes = changes.imageBytes, isNextButtonActive = true)
+        is ChooseScreenPartialState.PhotoPickedError -> prevState
     }
 
     val state = _state
@@ -80,11 +83,17 @@ class ChooseViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun nextButtonClicksFlow(): Flow<ChooseScreenPartialState> =
         nextBtnClicks
-            .mapLatest {
-                val byteArray = state.value.imageBytes
-                byteArray?.let { imageStorage.saveOriginalImage(it) }
+            .map { state.value.imageBytes }
+            .filterNotNull()
+            .flatMapLatest {
+                flow { emit(imageStorage.saveOriginalImage(it)) }
+                    .map { Navigate(CompareScreen(it)) }
+                    .catch {
+                        handleThrowable(it)
+                        ChooseScreenPartialState.PhotoPickedError
+                    }
             }
-            .map { Navigate(CompareScreen(it)) }
+
 
     private fun photoPicksFlow(): Flow<ChooseScreenPartialState> =
         photoPicks.map { byteArray -> PhotoPicked(byteArray) }
