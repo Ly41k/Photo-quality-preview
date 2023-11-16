@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783112557114",
+    "project_id": "photo-quality-preview",
+    "storage_bucket": "photo-quality-preview.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783112557114:android:4655576b809d46dd0edb03",
+        "android_client_info": {
+          "package_name": "com.example.photoqualitypreview"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsxRxPUywnyus51FEoowB3C2kQm4tlIOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
