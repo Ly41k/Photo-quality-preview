@@ -18,6 +18,7 @@ import com.example.photoqualitypreview.presentation.compare.models.CompareScreen
 import com.example.photoqualitypreview.presentation.compare.models.CompareScreenState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,7 +26,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -43,7 +47,7 @@ class CompareViewModel(
         MutableSharedFlow<Unit>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private val qualityChanges =
-        MutableSharedFlow<Float>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        MutableSharedFlow<Int>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private val qualityChangeFinish =
         MutableSharedFlow<Unit>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -53,7 +57,7 @@ class CompareViewModel(
             originalImageFlow(),
             nextButtonClicksFlow(),
             qualityChangesFlow(),
-            qualityChangeFinishedFlow()
+            qualityChangesFlow1()
         )
             .catch { throwable -> handleThrowable(throwable) }
             .runningFold(CompareScreenState(), ::viewStateReducer)
@@ -87,6 +91,10 @@ class CompareViewModel(
                 isNextButtonActive = true
             )
         }
+
+        CompareScreenPartialState.ModifiedImageError -> {
+            prevState
+        }
     }
 
     val state = _state
@@ -98,7 +106,7 @@ class CompareViewModel(
     fun onEvent(event: CompareScreenEvent) {
         when (event) {
             OnNextButtonClicked -> nextBtnClicks.tryEmit(Unit)
-            is OnQualityChanged -> qualityChanges.tryEmit(event.value)
+            is OnQualityChanged -> qualityChanges.tryEmit(event.value.toInt())
             is OnQualityChangeFinished -> qualityChangeFinish.tryEmit(Unit)
         }
     }
@@ -113,18 +121,23 @@ class CompareViewModel(
 
 
     private fun qualityChangesFlow(): Flow<CompareScreenPartialState> =
-        qualityChanges.map { QualityChanged(it.toInt()) }
+        qualityChanges.map { QualityChanged(it) }
 
-    private fun qualityChangeFinishedFlow(): Flow<CompareScreenPartialState> =
-        qualityChangeFinish
-            .map {
-                val quality = state.value.qualityPercent
-                val imageBytes = state.value.originalItem?.photoBytes
-                imageBytes?.let { imageStorage.saveModifiedImage(it, quality) }.orEmpty()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun qualityChangesFlow1(): Flow<CompareScreenPartialState> =
+        qualityChanges
+            .distinctUntilChanged()
+            .flatMapLatest { quality ->
+                flow {
+                    val imageBytes = state.value.originalItem?.photoBytes
+                    val fileName = imageBytes?.let { imageStorage.saveModifiedImage(it, quality) }.orEmpty()
+                    val bytes = imageStorage.getImage(fileName)
+                    emit(ModifiedImageLoaded(bytes, fileName))
+                }.catch {
+                    handleThrowable(it)
+                    CompareScreenPartialState.ModifiedImageError
+                }
             }
-            .map { imageStorage.getImage(it) to it }
-            .map { ModifiedImageLoaded(it.first, it.second) }
-
 
     private fun handleThrowable(error: Throwable) {
         Log.d("TESTING_TAG", "handleThrowable - $error")

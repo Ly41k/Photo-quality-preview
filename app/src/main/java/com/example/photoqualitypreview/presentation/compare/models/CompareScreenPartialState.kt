@@ -7,6 +7,8 @@ sealed interface CompareScreenPartialState {
 
     data class ModifiedImageLoaded(val byteArray: ByteArray?, val filePath: String) : CompareScreenPartialState
 
+    data object ModifiedImageError : CompareScreenPartialState
+
     data class QualityChanged(val value: Int) : CompareScreenPartialState
 
 
