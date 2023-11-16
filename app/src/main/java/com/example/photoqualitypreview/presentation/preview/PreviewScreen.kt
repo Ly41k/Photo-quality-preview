@@ -52,7 +52,7 @@ fun PreviewScreen(
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Text(
-                stringResource(id = R.string.original),
+                stringResource(id = R.string.original_),
                 modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -61,7 +61,7 @@ fun PreviewScreen(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                stringResource(id = R.string.modified),
+                stringResource(id = R.string.modified_),
                 modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
