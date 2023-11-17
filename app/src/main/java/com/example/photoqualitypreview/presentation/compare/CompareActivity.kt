@@ -27,7 +27,10 @@ class CompareActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val filePath = intent.getStringExtra(ORIGINAL_IMAGE_KEY)
-        if (filePath == null) this.onDestroy()
+        if (filePath != null) {
+            finish()
+            return
+        }
         setContent {
             PhotoQualityPreviewTheme {
                 val viewModel = getViewModel(

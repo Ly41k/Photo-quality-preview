@@ -20,7 +20,10 @@ class PreviewActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val originalFileName = intent.getStringExtra(Constants.ORIGINAL_IMAGE_KEY)
         val modifiedFileName = intent.getStringExtra(Constants.MODIFIED_IMAGE_KEY)
-        if (originalFileName == null || modifiedFileName == null) this.onDestroy()
+        if (originalFileName == null || modifiedFileName == null) {
+            finish()
+            return
+        }
         setContent {
             PhotoQualityPreviewTheme {
                 val viewModel = getViewModel(
